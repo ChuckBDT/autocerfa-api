@@ -6,7 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["autocerfa", "vehicle", "stock", "proxy", "api", "car-dealer"],
+  "keywords": [
+    "autocerfa",
+    "vehicle",
+    "stock",
+    "proxy",
+    "api",
+    "car-dealer"
+  ],
   "author": "chuckbdt",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "5.9.0"
+  }
 }
