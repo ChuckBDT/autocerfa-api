@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "A lightweight proxy API that wraps the Autocerfa.com vehicle stock API and exposes clean REST endpoints.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --env-file=.env --watch src/index.js"
   },
   "keywords": [
     "autocerfa",
