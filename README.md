@@ -2,13 +2,20 @@
 
 A lightweight Node.js proxy that wraps the [Autocerfa.com](https://www.autocerfa.com) vehicle stock API and exposes clean REST endpoints. Built with [Fastify](https://fastify.dev).
 
+It runs in one of two modes:
+
+- **Self-hosted** — you provide your own Autocerfa token via `AUTOCERFA_TOKEN`. No database, no API keys, no limits. This is the mode you get when you clone this repo.
+- **SaaS** — the hosted version. Clients authenticate with an API key (`Authorization: Bearer <key>`), tokens live in Supabase, and the free plan is limited to 1 API call per day.
+
+The mode is picked automatically: if `AUTOCERFA_TOKEN` is set, the server is self-hosted and all SaaS machinery is skipped.
+
 ## Requirements
 
 - Node.js 22+
 - An Autocerfa Elite or Accélérateur account
 - Your Autocerfa API token (see [Getting your token](#getting-your-token))
 
-## Getting started
+## Getting started (self-hosted)
 
 ```bash
 git clone https://github.com/your-username/autocerfa-api.git
@@ -41,8 +48,25 @@ The token is long-lived — you only need to repeat this if it expires or is rev
 
 | Variable | Required | Description |
 |---|---|---|
-| `AUTOCERFA_TOKEN` | Yes | Your Autocerfa API token |
+| `AUTOCERFA_TOKEN` | Self-hosted mode | Your Autocerfa API token. Setting it enables self-hosted mode. |
+| `SUPABASE_URL` | SaaS mode | Supabase project URL (`https://<ref>.supabase.co`, no path, no quotes) |
+| `SUPABASE_PRIVATE_KEY` | SaaS mode | Supabase `service_role` secret key |
 | `PORT` | No | Port to listen on (default: `3000`) |
+
+## Authentication
+
+- **Self-hosted mode**: none. Every request uses the `AUTOCERFA_TOKEN` from the environment.
+- **SaaS mode**: send your API key with every request:
+
+  ```bash
+  curl -H "Authorization: Bearer <your_api_key>" http://localhost:3000/v1/stock
+  ```
+
+  | Status | Meaning |
+  |---|---|
+  | `401` | Missing or invalid API key |
+  | `403` | No Autocerfa account connected to this API key |
+  | `429` | Free plan daily limit reached (1 call/day) |
 
 ## Endpoints
 
@@ -83,6 +107,13 @@ curl http://localhost:3000/v1/stock
 ```
 
 > Note: this endpoint can be slow (up to 180 seconds) depending on the size of your stock.
+
+**Errors:**
+
+| Status | Meaning |
+|---|---|
+| `504` | The upstream Autocerfa API timed out |
+| `502` | The upstream Autocerfa API returned an error |
 
 ## Scripts
 
