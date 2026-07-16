@@ -1,13 +1,8 @@
-const token = process.env.AUTOCERFA_TOKEN
 const baseUrl = 'https://www.autocerfa.com'
 
-const verifyEnvParams = () => {
-  if (!token) throw new Error('AUTOCERFA_TOKEN is not set')
-}
-
-const getVehicleStock = async () => {
+const getVehicleStock = async token => {
+  if (!token) throw new Error('No Autocerfa token provided')
   try {
-    verifyEnvParams()
     const response = await fetch(baseUrl + '/all-post/?action=stock', {
       signal: AbortSignal.timeout(180000),
       headers: { Authorization: token },

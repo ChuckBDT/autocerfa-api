@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import getVehicleStock from './routes/getVehicleStock.js'
+import authPlugin from './plugins/auth.js'
 
 const fastify = Fastify({
   logger: true,
@@ -7,6 +8,7 @@ const fastify = Fastify({
 
 const prefix = 'v1'
 
+fastify.register(authPlugin)
 fastify.register(getVehicleStock, { prefix })
 
 fastify.listen({ port: Number(process.env.PORT) || 3000 }, function (err, address) {
